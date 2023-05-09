@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import logging
+import concurrent.futures
 from datetime import datetime
 from dotenv import load_dotenv
 from agent import Agent
@@ -38,10 +39,17 @@ def main(mode, input_file):
     # List of other agents to call
     other_agents = ['xenolinguist', 'xenobiologist', 'xenosociologist', 'physical_scientist']
 
-    for agent_name in other_agents:
-        agent = Agent(agent_config[agent_name], mode, openai_api_key, logger)
-        agent_output = agent.call_agent(editor_output)
-        final_report += f"\n\n{agent_name.capitalize()} report:\n" + agent_output
+    # Call the other agents in parallel
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_agent = {executor.submit(Agent(agent_config[agent_name], mode, openai_api_key, logger).call_agent, editor_output): agent_name for agent_name in other_agents}
+        for future in concurrent.futures.as_completed(future_to_agent):
+            agent_name = future_to_agent[future]
+            try:
+                agent_output = future.result()
+            except Exception as exc:
+                logger.error(f'{agent_name} generated an exception: {exc}')
+            else:
+                final_report += f"\n\n{agent_name.capitalize()} report:\n" + agent_output
 
     # Write the final report to a file in the output directory
     output_file = os.path.join('output', f'{os.path.splitext(os.path.basename(input_file))[0]}_{timestamp}_output.txt')
