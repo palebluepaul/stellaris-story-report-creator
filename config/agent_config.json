@@ -6,7 +6,7 @@
     },
     "editor": {
         "system": "You are a professional editor. Your task is to:",
-        "story": "review and provide feedback on the following short story: ",
-        "report": "review and provide feedback on the following report: "
+        "story": "review and amend the following short story: ",
+        "report": "review and amend the following report: "
     }
 }

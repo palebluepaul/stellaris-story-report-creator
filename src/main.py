@@ -28,17 +28,14 @@ def main(mode, input_file):
     novelist = Agent(agent_config['novelist'], mode, openai_api_key, logger)
     novelist_output = novelist.call_agent(request)
 
-    # Call the editor agent
+    # Call the editor agent to edit the novelist's output
     editor = Agent(agent_config['editor'], mode, openai_api_key, logger)
-    editor_feedback = editor.call_agent(novelist_output)
+    editor_output = editor.call_agent(novelist_output)
 
-    # Call the novelist agent again with the editor's feedback
-    revised_output = novelist.call_agent(editor_feedback)
-
-    # Write the revised output to a file in the output directory
+    # Write the edited output to a file in the output directory
     output_file = os.path.join('output', f'{os.path.splitext(os.path.basename(input_file))[0]}_{timestamp}_output.txt')
     with open(output_file, 'w') as f:
-        f.write(revised_output)
+        f.write(editor_output)
 
     logger.info(f'Successfully wrote output to {output_file}')
 
