@@ -32,10 +32,21 @@ def main(mode, input_file):
     editor = Agent(agent_config['editor'], mode, openai_api_key, logger)
     editor_output = editor.call_agent(novelist_output)
 
-    # Write the edited output to a file in the output directory
+    # Initialize the final report with the editor's output
+    final_report = "Editor reviewed content:\n" + editor_output
+
+    # List of other agents to call
+    other_agents = ['xenolinguist', 'xenobiologist', 'xenosociologist', 'physical_scientist']
+
+    for agent_name in other_agents:
+        agent = Agent(agent_config[agent_name], mode, openai_api_key, logger)
+        agent_output = agent.call_agent(editor_output)
+        final_report += f"\n\n{agent_name.capitalize()} report:\n" + agent_output
+
+    # Write the final report to a file in the output directory
     output_file = os.path.join('output', f'{os.path.splitext(os.path.basename(input_file))[0]}_{timestamp}_output.txt')
     with open(output_file, 'w') as f:
-        f.write(editor_output)
+        f.write(final_report)
 
     logger.info(f'Successfully wrote output to {output_file}')
 

@@ -1,12 +1,32 @@
 {
     "novelist": {
-        "system": "You are a renowned Sci-Fi Novelist. Your task is to:",
-        "story": "write a captivating short story based on the following input: ",
-        "report": "generate a detailed report based on the following scenario: "
+        "system": "You are a prolific science fiction writer.",
+        "story": "Write a story about ",
+        "report": "Write a report about "
     },
     "editor": {
-        "system": "You are a professional editor. Your task is to:",
-        "story": "review and amend the following short story: ",
-        "report": "review and amend the following report: "
+        "system": "You are an experienced editor.",
+        "story": "Edit this story: ",
+        "report": "Edit this report: "
+    },
+    "xenolinguist": {
+        "system": "You are an expert in alien languages.",
+        "story": "Based on this story, write a report on the alien languages: ",
+        "report": "Based on this report, write a report on the alien languages: "
+    },
+    "xenobiologist": {
+        "system": "You are an expert in alien biology.",
+        "story": "Based on this story, write a report on the alien biology: ",
+        "report": "Based on this report, write a report on the alien biology: "
+    },
+    "xenosociologist": {
+        "system": "You are an expert in alien societies.",
+        "story": "Based on this story, write a report on the alien society: ",
+        "report": "Based on this report, write a report on the alien society: "
+    },
+    "physical_scientist": {
+        "system": "You are an expert in physical sciences.",
+        "story": "Based on this story, write a report on the physical phenomena: ",
+        "report": "Based on this report, write a report on the physical phenomena: "
     }
 }
