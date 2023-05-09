@@ -1,40 +1,15 @@
 import os
 import sys
 import json
-import openai
 import logging
 from datetime import datetime
 from dotenv import load_dotenv
-
-def call_agent(agent, mode, content, logger):
-    # Generate the message to the chat model
-    message = {
-        'role': 'system',
-        'content': agent['system']
-    }
-    message2 = {
-        'role': 'user',
-        'content': agent[mode] + content
-    }
-
-    logger.info(f"Prompt to OpenAI API: {message['content']} {message2['content']}")
-
-    # Call OpenAI's GPT-4 chat completion API
-    response = openai.ChatCompletion.create(
-      model="gpt-4",
-      messages=[message, message2]
-    )
-
-    output = response['choices'][0]['message']['content']
-    logger.info(f"Response from OpenAI API: {output}")
-
-    # Return the response
-    return output
+from agent import Agent
 
 def main(mode, input_file):
     # Load API key from environment
     load_dotenv()
-    openai.api_key = os.getenv('OPENAI_API_KEY')
+    openai_api_key = os.getenv('OPENAI_API_KEY')
 
     # Create a logger
     logger = logging.getLogger(__name__)
@@ -50,16 +25,18 @@ def main(mode, input_file):
         request = f.read()
 
     # Call the novelist agent
-    novelist_output = call_agent(agent_config['novelist'], mode, request, logger)
+    novelist = Agent(agent_config['novelist'], mode, openai_api_key, logger)
+    novelist_output = novelist.call_agent(request)
 
     # Call the editor agent
-    editor_feedback = call_agent(agent_config['editor'], mode, novelist_output, logger)
+    editor = Agent(agent_config['editor'], mode, openai_api_key, logger)
+    editor_feedback = editor.call_agent(novelist_output)
 
     # Call the novelist agent again with the editor's feedback
-    revised_output = call_agent(agent_config['novelist'], mode, editor_feedback, logger)
+    revised_output = novelist.call_agent(editor_feedback)
 
     # Write the revised output to a file in the output directory
-    output_file = os.path.join('output', f'{os.path.splitext(os.path.basename(input_file))[0]}_output.txt')
+    output_file = os.path.join('output', f'{os.path.splitext(os.path.basename(input_file))[0]}_{timestamp}_output.txt')
     with open(output_file, 'w') as f:
         f.write(revised_output)
 
