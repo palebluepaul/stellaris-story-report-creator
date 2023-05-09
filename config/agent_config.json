@@ -3,5 +3,10 @@
         "system": "You are a renowned Sci-Fi Novelist. Your task is to:",
         "story": "write a captivating short story based on the following input: ",
         "report": "generate a detailed report based on the following scenario: "
+    },
+    "editor": {
+        "system": "You are a professional editor. Your task is to:",
+        "story": "review and provide feedback on the following short story: ",
+        "report": "review and provide feedback on the following report: "
     }
 }
